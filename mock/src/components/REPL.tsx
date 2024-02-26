@@ -2,6 +2,7 @@ import { useState } from 'react';
 import '../styles/main.css';
 import { REPLHistory } from './REPLHistory';
 import { REPLInput } from './REPLInput';
+import { REPLFunction } from './REPLFunction';
 
 /* 
   You'll want to expand this component (and others) for the sprints! Remember 
@@ -16,6 +17,9 @@ export default function REPL() {
   // TODO: Add some kind of shared state that holds all the commands submitted.
   // CHANGED
   const [history, setHistory] = useState<string[]>([])
+  const [mode, setMode] = useState<string>("brief")
+  const args = ["brief"]
+
 
   return (
     <div className="repl">  
@@ -25,6 +29,9 @@ export default function REPL() {
       <hr></hr>
       {/* CHANGED */}
       <REPLInput history={history} setHistory={setHistory}/>
+      {/* <REPLFunction args={args} mode={mode} setMode={setMode}/> */}
+      {/*Function has parameters for mode*/}
+      {/* <REPLFunction mode={mode} setMode={setMode}/> */}
     </div>
   );
 }
