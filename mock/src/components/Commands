@@ -1,0 +1,59 @@
+import {useState } from 'react';
+/* A command-processor function for our REPL. The function returns a string, which is the value to print to history when 
+ * the command is done executing.
+ * 
+ * The arguments passed in the input (which need not be named "args") should 
+ * *NOT* contain the command-name prefix.
+ */
+export interface REPLFunction {    
+  //args takes in an input, then the output will be either a string or a list of list of strings
+  (args: Array<string>): String|String[][]
+}
+export function commands(args: Array<String>){
+    const mapsOfCommands = new Map();
+    const commandArray = args
+    //Mode true is brief, false is verbose
+    const [mode, setMode] = useState<boolean>(true)
+
+    mapsOfCommands.set("mode", function() {
+        setMode(!mode)
+        console.log("Mode is now " + mode)
+        return 
+    });
+    mapsOfCommands.set("view", function() {
+        console.log("Parsed csv");
+
+        //brief
+        if(mode){
+
+        }
+        //verbose
+        else{
+
+        }
+    });
+    mapsOfCommands.set("load_csv", function(commandArray: string[]) {
+        console.log("Loaded csv");
+        //brief
+        if(mode){
+            return 
+        }
+        //verbose
+        else{
+
+        }
+    });
+    mapsOfCommands.set("search", function(commandArray: string []) {
+        console.log("Searched csv");
+        //brief
+        if(mode){
+
+        }
+        //verbose
+        else{
+
+        }
+    });
+}
+
+  
