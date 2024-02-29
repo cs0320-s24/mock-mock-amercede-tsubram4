@@ -1,6 +1,4 @@
 const mockedData = new Map();
-const mockedDataLoad = new Map();
-const mockedDataSearch = new Map();
 const view1 = [
     ['apple', 'banana', 'cherry'],
     ['dog', 'elephant', 'fox'],
@@ -17,7 +15,16 @@ const allowedLoadedDirectories = [
     'data/income_by_race.csv',
     'data/postsecondary_education.csv'
 ]
+const searchResults = [
+    ['dog', 'cat', 'frog'],
+    ['bat', 'dog', 'ant'],
+    ['goat', 'bird', 'dog']
+]
 
 mockedData.set("view1", view1);
 mockedData.set("view2", view2);
 mockedData.set("load", allowedLoadedDirectories)
+
+export function MockedData(){
+    return mockedData
+}

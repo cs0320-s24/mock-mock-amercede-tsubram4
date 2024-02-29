@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 import '../styles/main.css';
 import { ControlledInput } from './ControlledInput';
+import { Commands } from './Commands';
 
 interface REPLInputProps{
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -9,17 +10,17 @@ interface REPLInputProps{
   history: string[],
   setHistory: Dispatch<SetStateAction<string[]>>,
 }
-/**
- * A command-processor function for our REPL. The function returns a string, which is the value to print to history when 
- * the command is done executing.
- * 
- * The arguments passed in the input (which need not be named "args") should 
- * *NOT* contain the command-name prefix.
- */
-export interface REPLFunction {    
-  //args takes in an input, then the output will be either a string or a list of list of strings
-  (args: Array<string>): String|String[][]
-}
+// /**
+//  * A command-processor function for our REPL. The function returns a string, which is the value to print to history when 
+//  * the command is done executing.
+//  * 
+//  * The arguments passed in the input (which need not be named "args") should 
+//  * *NOT* contain the command-name prefix.
+//  */
+// export interface REPLFunction {    
+//   //args takes in an input, then the output will be either a string or a list of list of strings
+//   (args: Array<string>): String|String[][]
+// }
 
 // You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
 // REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
@@ -31,6 +32,8 @@ export function REPLInput(props : REPLInputProps) {
     const [count, setCount] = useState<number>(0)
     //Mode true is brief, false is verbose
     const [mode, setMode] = useState<boolean>(true)
+    //Set result to be a string or a list of list of strings
+    const [result, setResult] = useState<string|String[][]>("")
     
     
     // This function is triggered when the button is clicked.
@@ -38,7 +41,8 @@ export function REPLInput(props : REPLInputProps) {
     function handleSubmit(commandString:string) {
       setCount(count+1)
       // CHANGED
-      const mapsOfCommands = new Map();
+      //args: Array<string>
+      //const mapsOfCommands = new Map();
 
       //Supposed to change the mode instantly, but does it delayed, which still works for this project
       // if (commandString.toLowerCase() === "mode"){
@@ -48,40 +52,68 @@ export function REPLInput(props : REPLInputProps) {
       // if (commandString.toLowerCase() === "view"){
 
       // }
-      const commandArray = commandString.split(" ");
-      // if(commandArray[0].toLowerCase() === "load_file"){
+      const commandArray = commandString.toLowerCase().split(" ");
 
-      // }
-      // if(commandArray[0].toLowerCase() === "search"){
+      //I want to pass in this commandArray into my Commands so that the code that is in commands
+      //can use it and return string
+      const mapsOfCommands = new Map();
 
-      // }
-      // console.log("Mode is now " + mode)
       mapsOfCommands.set("mode", function() {
         setMode(!mode)
         console.log("Mode is now " + mode)
+        //Was brief, but going forward will be verbose
+        if(mode){
+            setResult("We are now in verbose mode")
+        }
+        else{
+            //Was verbose, going forward will be brief
+            setResult([["Command: mode"],["Output: We are now in brief mode"]])
+        }
       });
       mapsOfCommands.set("view", function() {
-        console.log("Parsed csv");
+        console.log("We're in view");
+
+        //brief
+        if(mode){
+            setResult("Need to look into how to check filepaths")
+        }
+        //verbose
+        else{
+            setResult([["Command: view"],["Output: We are now in brief mode"]])
+        }
       });
       mapsOfCommands.set("load_csv", function(commandArray: string[]) {
         console.log("Loaded csv");
+        //brief
+        if(mode){
+            setResult("Hopefully a loaded csv")
+        }
+        //verbose
+        else{
+            setResult([["Command: load_csv"],["Output: " + "Hopefully Mocked Loaded Soon"]])
+        }
       });
       mapsOfCommands.set("search", function(commandArray: string []) {
         console.log("Searched csv");
+        //brief
+        if(mode){
+            setResult("Hopefully mocked search data soon!")
+        }
+        //verbose
+        else{
+            setResult([["Command: search"],["Output: " + "Hopefully mocked search data soon!"]])
+        }
       });
       
-      //Will run the function that is there
-      if(commandArray.length === 1){       
-        mapsOfCommands.get(commandArray[0])()
-      }
-      else if(commandArray.length > 1){
-        mapsOfCommands.get(commandArray[0])(commandArray)
+      //mapsOfCommands.get(commandArray[0])
+      if(mapsOfCommands.has(commandArray[0]) === false){
+        setResult("Command not found")
       }
       else{
-        //There is no command
-        //Probably just tell the user to input a command
+        setResult(mapsOfCommands.get(commandArray[0])())
       }
-
+      console.log(result)
+      console.log(mode)
       props.setHistory([...props.history, commandString])
       setCommandString('')
     }
