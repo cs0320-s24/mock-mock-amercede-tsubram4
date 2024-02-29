@@ -60,7 +60,7 @@ export function REPLInput(props : REPLInputProps) {
 
       mapsOfCommands.set("mode", function() {
         setMode(!mode)
-        console.log("Mode is now " + mode)
+        console.log("At the start Mode is now " + mode)
         //Was brief, but going forward will be verbose
         if(mode){
             setResult("We are now in verbose mode")
@@ -79,10 +79,10 @@ export function REPLInput(props : REPLInputProps) {
         }
         //verbose
         else{
-            setResult([["Command: view"],["Output: We are now in brief mode"]])
+            setResult([["Command: view"],["Output: We are now in verbose mode"]])
         }
       });
-      mapsOfCommands.set("load_csv", function(commandArray: string[]) {
+      mapsOfCommands.set("load_file", function(commandArray: string[]) {
         console.log("Loaded csv");
         //brief
         if(mode){
@@ -110,11 +110,11 @@ export function REPLInput(props : REPLInputProps) {
         setResult("Command not found")
       }
       else{
-        setResult(mapsOfCommands.get(commandArray[0])())
+        mapsOfCommands.get(commandArray[0])()
       }
       console.log(result)
-      console.log(mode)
-      props.setHistory([...props.history, commandString])
+      console.log("At the end Mode is now " + mode)
+      props.setHistory([...props.history, commandString, result.toString()])
       setCommandString('')
     }
     /**
