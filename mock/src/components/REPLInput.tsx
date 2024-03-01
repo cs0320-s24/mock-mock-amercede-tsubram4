@@ -2,6 +2,7 @@ import { Dispatch, SetStateAction, useState } from 'react';
 import '../styles/main.css';
 import { ControlledInput } from './ControlledInput';
 import { Commands } from './Commands';
+import { MockedData } from './MockedData';
 
 interface REPLInputProps{
   // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
@@ -33,7 +34,9 @@ export function REPLInput(props : REPLInputProps) {
     //Mode true is brief, false is verbose
     const [mode, setMode] = useState<boolean>(true)
     //Set result to be a string or a list of list of strings
-    const [result, setResult] = useState<string|String[][]>("")
+    const [result, setResult] = useState<string|String[][]|undefined>("")
+    
+    const mockedData = MockedData()
     
     
     // This function is triggered when the button is clicked.
@@ -57,65 +60,76 @@ export function REPLInput(props : REPLInputProps) {
       //I want to pass in this commandArray into my Commands so that the code that is in commands
       //can use it and return string
       const mapsOfCommands = new Map();
+      
+      //Here we instantiate our Mocked Data Map from our mocked data file
+      
 
       mapsOfCommands.set("mode", function() {
         setMode(!mode)
         console.log("At the start Mode is now " + mode)
         //Was brief, but going forward will be verbose
         if(mode){
-            setResult("We are now in verbose mode")
+          setResult("We are now in verbose mode")
         }
         else{
-            //Was verbose, going forward will be brief
-            setResult([["Command: mode"],["Output: We are now in brief mode"]])
+          //Was verbose, going forward will be brief
+          setResult([["Command: mode"],["Output: We are now in brief mode"]])
         }
       });
       mapsOfCommands.set("view", function() {
         console.log("We're in view");
-
-        //brief
-        if(mode){
-            setResult("Need to look into how to check filepaths")
+        var viewData = mockedData.get("view")
+        if(mockedData.has("view") === undefined || mockedData.has("view") === false){
+          setResult("View data is not found in the mocked data file");
         }
-        //verbose
         else{
-            setResult([["Command: view"],["Output: We are now in verbose mode"]])
-        }
+          if(mode){                  
+            setResult(viewData)
+          }
+          //verbose
+          else{
+            setResult([["Command: view"],["Output: " + viewData]])
+          }
+        }  
+        //brief
+        
       });
       mapsOfCommands.set("load_file", function(commandArray: string[]) {
         console.log("Loaded csv");
         //brief
         if(mode){
-            setResult("Hopefully a loaded csv")
+          setResult("Hopefully a loaded csv")
         }
         //verbose
         else{
-            setResult([["Command: load_csv"],["Output: " + "Hopefully Mocked Loaded Soon"]])
+          setResult([["Command: load_csv"],["Output: " + "Hopefully Mocked Loaded Soon"]])
         }
       });
       mapsOfCommands.set("search", function(commandArray: string []) {
         console.log("Searched csv");
         //brief
         if(mode){
-            setResult("Hopefully mocked search data soon!")
+          setResult("Hopefully mocked search data soon!")
         }
         //verbose
         else{
-            setResult([["Command: search"],["Output: " + "Hopefully mocked search data soon!"]])
+          setResult([["Command: search"],["Output: " + "Hopefully mocked search data soon!"]])
         }
       });
       
       //mapsOfCommands.get(commandArray[0])
-      if(mapsOfCommands.has(commandArray[0]) === false){
-        setResult("Command not found")
+      if (mapsOfCommands.has(commandArray[0]) === false) {
+        setResult("Command not found");
+      } else {
+        mapsOfCommands.get(commandArray[0])();
       }
-      else{
-        mapsOfCommands.get(commandArray[0])()
-      }
-      console.log(result)
-      console.log("At the end Mode is now " + mode)
-      props.setHistory([...props.history, commandString, result.toString()])
-      setCommandString('')
+
+      console.log(result);
+      console.log("At the end Mode is now " + mode);
+
+      const updatedResult = result ? result.toString() : ""; // Add type check to ensure 'result' is defined
+      props.setHistory([...props.history, commandString, updatedResult]);
+      setCommandString("");
     }
     /**
      * We suggest breaking down this component into smaller components, think about the individual pieces 

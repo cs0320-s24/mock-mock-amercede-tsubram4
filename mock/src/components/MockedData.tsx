@@ -1,4 +1,5 @@
-const mockedData = new Map();
+
+const mockedData = new Map<string, string[][]>();
 const view1 = [
     ['apple', 'banana', 'cherry'],
     ['dog', 'elephant', 'fox'],
@@ -10,10 +11,10 @@ const view2 = [
     ['21', '22', '23', '24', '25', '26', '27', '28', '29', '30']
 ]
 const allowedLoadedDirectories = [
-    'data/stars/stardata.csv', 'data/malformed/malformed_signs.csv',
+    ['data/stars/stardata.csv', 'data/malformed/malformed_signs.csv',
     'data/census/dol_ri_earnings_disparity.csv', 
     'data/income_by_race.csv',
-    'data/postsecondary_education.csv'
+    'data/postsecondary_education.csv']
 ]
 const searchResults = [
     ['dog', 'cat', 'frog'],
@@ -21,7 +22,7 @@ const searchResults = [
     ['goat', 'bird', 'dog']
 ]
 
-mockedData.set("view1", view1);
+mockedData.set("view", view1);
 mockedData.set("view2", view2);
 mockedData.set("load", allowedLoadedDirectories)
 
