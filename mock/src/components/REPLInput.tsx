@@ -74,14 +74,13 @@ export function REPLInput(props: REPLInputProps) {
       return "File is not loaded";
     } else {
       if (mode) {
+        return viewData
         return createdTable.toString();
       }
-      //verbose
       else {
-        return [["Command: view"], [" Output: " + createdTable]];
+        return [["Command: view"], [" Output: " + viewData]];
       }
     }
-    //brief
   });
   mapsOfCommands.set("load_file", function (commandArray: string[]) {
     console.log("Loaded csv");
@@ -122,6 +121,9 @@ export function REPLInput(props: REPLInputProps) {
     //   console.log("Sorry, you must input a term to search for");
     //   return "Sorry, you must input a term to search for appropriately";
     // }
+    if (loaded === false) {
+      return "File is not loaded";
+    }
     if (mode) {
       return searchResults;
     }
@@ -134,13 +136,7 @@ export function REPLInput(props: REPLInputProps) {
   // This function is triggered when the button is clicked.
   // This will print out the possible and command, so output and input
   function handleSubmit(commandString: any) {
-    setCount(count + 1);
-    // CHANGED
-
     const commandArray = commandString.toLowerCase().split(" ");
-
-    //I want to pass in this commandArray into my Commands so that the code that is in commands
-    //can use it and return string
     var loadedOnce = false;
     // //mapsOfCommands.get(commandArray[0])
     // if (mapsOfCommands.has(commandArray[0]) === false) {
@@ -215,7 +211,7 @@ export function REPLInput(props: REPLInputProps) {
       {/* TODO: Currently this button just counts up, can we make it push the contents of the input box to the history?*/}
 
       <button onClick={() => handleSubmit(commandString)}>
-        Submitted {count} times
+        Submit Command
       </button>
     </div>
   );

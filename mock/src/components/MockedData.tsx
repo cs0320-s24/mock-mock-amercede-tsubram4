@@ -25,6 +25,7 @@ const searchResults = [
 mockedData.set("view", view1);
 mockedData.set("view2", view2);
 mockedData.set("load", allowedLoadedDirectories)
+mockedData.set("search", searchResults)
 
 export function MockedData(){
     return mockedData
