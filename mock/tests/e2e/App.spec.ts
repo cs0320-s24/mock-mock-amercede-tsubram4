@@ -74,7 +74,7 @@ test("after I click the button, my command gets pushed", async ({ page }) => {
     const history = document.querySelector(".repl-history");
     return history?.children[0]?.textContent;
   });
-  expect(firstChild).toEqual("That is not a valid command");
+  expect(firstChild).toEqual("Command not found");
 });
 
 test("after I enter mode once, mode changes", async ({ page }) => {
@@ -130,7 +130,7 @@ test("entering nothing outputs helpful message", async ({ page }) => {
   await page.getByLabel("Command input").fill("");
   await page.getByRole("button", { name: "Submit Command" }).click();
   await expect(
-    page.locator('.repl-history >> text="That is not a valid command"')
+    page.locator('.repl-history >> text="Command not found"')
   ).toBeVisible();
 });
 
@@ -143,5 +143,64 @@ test("entering search before load_file outputs helpful message", async ({
   await page.getByRole("button", { name: "Submit Command" }).click();
   await expect(
     page.locator('.repl-history >> text="File is not loaded"')
+  ).toBeVisible();
+});
+
+test("combination of gibberish and all 4 commands", async ({ page }) => {
+  await page.goto("http://localhost:8000/");
+  await page.getByLabel("Login").click();
+
+  await page.getByLabel("Command input").fill("access");
+  await page.getByRole("button", { name: "Submit Command" }).click();
+  await expect(
+    page.locator('.repl-history >> text="Command not found"')
+  ).toBeVisible();
+
+  await page.getByLabel("Command input").fill("view");
+  await page.getByRole("button", { name: "Submit Command" }).click();
+  await expect(
+    page.locator('.repl-history >> text="File is not loaded"')
+  ).toBeVisible();
+
+  await page.getByLabel("Command input").fill("load_file");
+  await page.getByRole("button", { name: "Submit Command" }).click();
+  await expect(
+    page.locator('.repl-history >> text="Loaded csv successfully"')
+  ).toBeVisible();
+
+  await page.getByLabel("Command input").fill("view");
+  await page.getByRole("button", { name: "Submit Command" }).click();
+  await expect(
+    page.locator(
+      '.repl-history >> text="applebananacherrydogelephantfoxgreenbluered"'
+    )
+  ).toBeVisible();
+
+  await page.getByLabel("Command input").fill("search");
+  await page.getByRole("button", { name: "Submit Command" }).click();
+  await expect(
+    page.locator('.repl-history >> text="dogcatfrogbatdogantgoatbirddog"')
+  ).toBeVisible();
+
+  await page.getByLabel("Command input").fill("mode");
+  await page.getByRole("button", { name: "Submit Command" }).click();
+  await expect(
+    page.locator('.repl-history >> text="We are now in verbose mode"')
+  ).toBeVisible();
+
+  await page.getByLabel("Command input").fill("view");
+  await page.getByRole("button", { name: "Submit Command" }).click();
+  await expect(
+    page.locator(
+      '.repl-history >> text="Command: view Output: apple,banana,cherry,dog,elephant,fox,green,blue,red"'
+    )
+  ).toBeVisible();
+
+  await page.getByLabel("Command input").fill("search");
+  await page.getByRole("button", { name: "Submit Command" }).click();
+  await expect(
+    page.locator(
+      '.repl-history >> text="Command: search Output: dog,cat,frog,bat,dog,ant,goat,bird,dog"'
+    )
   ).toBeVisible();
 });
