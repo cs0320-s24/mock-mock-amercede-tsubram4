@@ -32,8 +32,8 @@ export function REPLInput(props: REPLInputProps) {
   // TODO WITH TA : add a count state
   const [count, setCount] = useState<number>(0);
   //Mode true is brief, false is verbose
-  const [mode1, setMode] = useState<boolean>(true);
-  var mode = true;
+  const [mode, setMode] = useState<boolean>(true);
+  var mode1 = true;
   const [loaded, setLoaded] = useState<boolean>(false);
   var loaded1 = false;
   const [hasRun, setHasRun] = useState<boolean>(false);
@@ -41,7 +41,7 @@ export function REPLInput(props: REPLInputProps) {
   const [result1, setResult] = useState<
     string | HTMLTableElement | String[][] | undefined
   >("");
-  var result = "Result has not been updated yet";
+  var result = "That is not a valid command";
 
   const mockedData = MockedData();
   const mapsOfCommands = new Map();
@@ -50,14 +50,14 @@ export function REPLInput(props: REPLInputProps) {
 
   mapsOfCommands.set("mode", function () {
     setMode(!mode);
-    mode = !mode;
+    //mode = !mode;
     console.log("At the start Mode is now " + mode);
     //Was brief, but going forward will be verbose
     if (mode) {
       return "We are now in verbose mode";
     } else {
       //Was verbose, going forward will be brief
-      return [["Command: mode"], ["Output: We are now in brief mode"]];
+      return [["Command: mode"], [" Output: We are now in brief mode"]];
     }
   });
 
@@ -78,7 +78,7 @@ export function REPLInput(props: REPLInputProps) {
       }
       //verbose
       else {
-        return [["Command: view"], ["Output: " + createdTable]];
+        return [["Command: view"], [" Output: " + createdTable]];
       }
     }
     //brief
@@ -87,15 +87,13 @@ export function REPLInput(props: REPLInputProps) {
     console.log("Loaded csv");
     var allowedLoadedDirectories = mockedData.get("load");
     console.log(commandArray);
-    if (
-      commandArray.length === 1 ||
-      commandArray[1] === undefined ||
-      allowedLoadedDirectories === undefined ||
-      !allowedLoadedDirectories[0].includes(commandArray[1])
-    ) {
-      console.log("File is not found in the allowed loaded directories");
-      return "File is not found in the allowed loaded directories";
-    } else {
+    // if (
+    //   allowedLoadedDirectories === ||
+    //   !allowedLoadedDirectories[0].includes(commandArray[1])
+    // ) {
+    //   console.log("File is not found in the allowed loaded directories");
+    //   return "File is not found in the allowed loaded directories";
+    // } else {
       console.log("File is found in the allowed loaded directories");
       setLoaded(true);
       //brief
@@ -106,30 +104,30 @@ export function REPLInput(props: REPLInputProps) {
       else {
         return [
           ["Command: load_file"],
-          ["Output: " + "Loaded csv successfully"],
+          [" Output: " + "Loaded csv successfully"],
         ];
       }
-    }
+    // }
   });
   mapsOfCommands.set("search", function (commandArray: string[]) {
     console.log("Searched csv");
     var searchResults = mockedData.get("search");
     //brief
-    if (
-      commandArray.length === 1 ||
-      commandArray[1] === undefined ||
-      searchResults === undefined ||
-      commandArray.length > 3
-    ) {
-      console.log("Sorry, you must input a term to search for");
-      return "Sorry, you must input a term to search for appropriately";
-    }
+    // if (
+    //   commandArray.length === 1 ||
+    //   commandArray[1] === undefined ||
+    //   searchResults === undefined ||
+    //   commandArray.length > 3
+    // ) {
+    //   console.log("Sorry, you must input a term to search for");
+    //   return "Sorry, you must input a term to search for appropriately";
+    // }
     if (mode) {
       return searchResults;
     }
     //verbose
     else {
-      return [["Command: search"], ["Output: " + searchResults]];
+      return [["Command: search"], [" Output: " + searchResults]];
     }
   });
 
@@ -169,7 +167,7 @@ export function REPLInput(props: REPLInputProps) {
       result = mapsOfCommands.get(commandArray[0])();
     }
     const updatedResult = result ? result.toString() : ""; // Add type check to ensure 'result' is defined
-    props.setHistory([...props.history, updatedResult]);
+    props.setHistory([...props.history, result]);
     setCommandString("");
   }
   function createTable(tableData: string[][] | undefined) {
