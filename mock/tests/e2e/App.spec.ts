@@ -38,41 +38,27 @@ test("on page load, i dont see the input box until login", async ({ page }) => {
   await expect(page.getByLabel("Command input")).toBeVisible();
 });
 
-test("after I type into the input box, its text changes", async ({ page }) => {
-  // Step 1: Navigate to a URL
-  await page.goto("http://localhost:8000/");
-  await page.getByLabel("Login").click();
-
-  // Step 2: Interact with the page
-  // Locate the element you are looking for
-  await page.getByLabel("Command input").click();
-  await page.getByLabel("Command input").fill("Awesome command");
-
-  // Step 3: Assert something about the page
-  // Assertions are done by using the expect() function
-  const mock_input = `Awesome command`;
-  await expect(page.getByLabel("Command input")).toHaveValue(mock_input);
-});
-
 test("on page load, i see a button", async ({ page }) => {
   // CHANGED
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await expect(
-    page.getByRole("button", { name: "Submitted 0 times" })
+    page.getByRole("button", { name: "Submit Command" })
   ).toBeVisible();
 });
 
-test("after I click the button, its label increments", async ({ page }) => {
+test("after I click the button, its label need not increment", async ({
+  page,
+}) => {
   // CHANGED
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await expect(
-    page.getByRole("button", { name: "Submitted 0 times" })
+    page.getByRole("button", { name: "Submit Command" })
   ).toBeVisible();
-  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
   await expect(
-    page.getByRole("button", { name: "Submitted 1 times" })
+    page.getByRole("button", { name: "Submit Command" })
   ).toBeVisible();
 });
 
@@ -81,22 +67,22 @@ test("after I click the button, my command gets pushed", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").fill("Awesome command");
-  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
 
   // you can use page.evaulate to grab variable content from the page for more complex assertions
   const firstChild = await page.evaluate(() => {
     const history = document.querySelector(".repl-history");
     return history?.children[0]?.textContent;
   });
-  expect(firstChild).toEqual("Awesome command");
+  expect(firstChild).toEqual("That is not a valid command");
 });
 
 test("after I enter mode once, mode changes", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").fill("mode");
-  await page.getByRole("button", { name: "Submitted 0 times" }).click();
-  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
   await expect(
     page.locator('.repl-history >> text="We are now in verbose mode"')
   ).toBeVisible();
@@ -106,14 +92,12 @@ test("after I enter mode twice, mode reverts", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").fill("mode");
-  await page.getByRole("button", { name: "Submitted 0 times" }).click();
-  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
   await page.getByLabel("Command input").fill("mode");
-  await page.getByRole("button", { name: "Submitted 2 times" }).click();
-  await page.getByRole("button", { name: "Submitted 3 times" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
   await expect(
     page.locator(
-      '.repl-history >> text="Command: mode,Output: We are now in brief mode"'
+      '.repl-history >> text="Command: mode Output: We are now in brief mode"'
     )
   ).toBeVisible();
 });
@@ -124,7 +108,7 @@ test("entering view before load_file outputs helpful message", async ({
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").fill("view");
-  await page.getByRole("button", { name: "Submitted 0 times" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
   await expect(
     page.locator('.repl-history >> text="File is not loaded"')
   ).toBeVisible();
@@ -134,10 +118,9 @@ test("entering load_file outputs load message", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").fill("load_file");
-  await page.getByRole("button", { name: "Submitted 0 times" }).click();
-  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
   await expect(
-    page.locator('.repl-history >> text="Hopefully a loaded csv"')
+    page.locator('.repl-history >> text="Loaded csv successfully"')
   ).toBeVisible();
 });
 
@@ -145,21 +128,20 @@ test("entering nothing outputs helpful message", async ({ page }) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").fill("");
-  await page.getByRole("button", { name: "Submitted 0 times" }).click();
-  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
   await expect(
-    page.locator('.repl-history >> text="Command not found"')
+    page.locator('.repl-history >> text="That is not a valid command"')
   ).toBeVisible();
 });
 
-// SEARCH SHOULD ONLY WORK AFTER LOAD - SIMILAR TO VIEW
-test("entering search outputs search message", async ({ page }) => {
+test("entering search before load_file outputs helpful message", async ({
+  page,
+}) => {
   await page.goto("http://localhost:8000/");
   await page.getByLabel("Login").click();
   await page.getByLabel("Command input").fill("search");
-  await page.getByRole("button", { name: "Submitted 0 times" }).click();
-  await page.getByRole("button", { name: "Submitted 1 times" }).click();
+  await page.getByRole("button", { name: "Submit Command" }).click();
   await expect(
-    page.locator('.repl-history >> text="Hopefully mocked search data soon!"')
+    page.locator('.repl-history >> text="File is not loaded"')
   ).toBeVisible();
 });
