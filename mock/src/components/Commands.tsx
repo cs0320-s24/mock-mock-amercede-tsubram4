@@ -68,3 +68,7 @@ export function Commands(args: Array<String>){
 }
 
   
+// export function getCommandResult(command: string, args: Array<string>, mode: boolean, setMode: Dispatch<SetStateAction<boolean>>): String|String[][] {
+//     const commandFunction = Commands(args)
+//     return commandFunction(args, mode, setMode)
+// }
