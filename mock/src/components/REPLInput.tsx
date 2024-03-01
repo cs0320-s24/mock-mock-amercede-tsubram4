@@ -1,12 +1,9 @@
 import { Dispatch, SetStateAction, useState } from "react";
 import "../styles/main.css";
 import { ControlledInput } from "./ControlledInput";
-import { Commands } from "./Commands";
 import { MockedData } from "./MockedData";
 
 interface REPLInputProps {
-  // TODO: Fill this with desired props... Maybe something to keep track of the submitted commands
-  // CHANGED
   //Only using props as global variables to keep track of history
   history: string[];
   setHistory: Dispatch<SetStateAction<string[]>>;
@@ -18,39 +15,22 @@ interface REPLInputProps {
 //  * The arguments passed in the input (which need not be named "args") should
 //  * *NOT* contain the command-name prefix.
 //  */
-// export interface REPLFunction {
-//   //args takes in an input, then the output will be either a string or a list of list of strings
-//   (args: Array<string>): String|String[][]
-// }
 
-// You can use a custom interface or explicit fields or both! An alternative to the current function header might be:
-// REPLInput(history: string[], setHistory: Dispatch<SetStateAction<string[]>>)
 export function REPLInput(props: REPLInputProps) {
-  // Remember: let React manage state in your webapp.
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
-  // TODO WITH TA : add a count state
   const [count, setCount] = useState<number>(0);
   //Mode true is brief, false is verbose
   const [mode, setMode] = useState<boolean>(true);
-  var mode1 = true;
   const [loaded, setLoaded] = useState<boolean>(false);
-  var loaded1 = false;
-  const [hasRun, setHasRun] = useState<boolean>(false);
-  //Set result to be a string or a list of list of strings
-  const [result1, setResult] = useState<
-    string | HTMLTableElement | String[][] | undefined
-  >("");
   var result = "That is not a valid command";
 
   const mockedData = MockedData();
   const mapsOfCommands = new Map();
 
   //Here we instantiate our Mocked Data Map from our mocked data file
-
   mapsOfCommands.set("mode", function () {
     setMode(!mode);
-    //mode = !mode;
     console.log("At the start Mode is now " + mode);
     //Was brief, but going forward will be verbose
     if (mode) {
@@ -64,7 +44,6 @@ export function REPLInput(props: REPLInputProps) {
   mapsOfCommands.set("view", function () {
     console.log("We're in view");
     var viewData = mockedData.get("view");
-    var createdTable = createTable(viewData);
     if (
       mockedData.has("view") === undefined ||
       mockedData.has("view") === false
@@ -75,7 +54,6 @@ export function REPLInput(props: REPLInputProps) {
     } else {
       if (mode) {
         return viewData
-        return createdTable.toString();
       }
       else {
         return [["Command: view"], [" Output: " + viewData]];
@@ -86,13 +64,6 @@ export function REPLInput(props: REPLInputProps) {
     console.log("Loaded csv");
     var allowedLoadedDirectories = mockedData.get("load");
     console.log(commandArray);
-    // if (
-    //   allowedLoadedDirectories === ||
-    //   !allowedLoadedDirectories[0].includes(commandArray[1])
-    // ) {
-    //   console.log("File is not found in the allowed loaded directories");
-    //   return "File is not found in the allowed loaded directories";
-    // } else {
       console.log("File is found in the allowed loaded directories");
       setLoaded(true);
       //brief
@@ -106,24 +77,14 @@ export function REPLInput(props: REPLInputProps) {
           [" Output: " + "Loaded csv successfully"],
         ];
       }
-    // }
   });
   mapsOfCommands.set("search", function (commandArray: string[]) {
     console.log("Searched csv");
     var searchResults = mockedData.get("search");
-    //brief
-    // if (
-    //   commandArray.length === 1 ||
-    //   commandArray[1] === undefined ||
-    //   searchResults === undefined ||
-    //   commandArray.length > 3
-    // ) {
-    //   console.log("Sorry, you must input a term to search for");
-    //   return "Sorry, you must input a term to search for appropriately";
-    // }
     if (loaded === false) {
       return "File is not loaded";
     }
+    //brief
     if (mode) {
       return searchResults;
     }
@@ -137,32 +98,19 @@ export function REPLInput(props: REPLInputProps) {
   // This will print out the possible and command, so output and input
   function handleSubmit(commandString: any) {
     const commandArray = commandString.toLowerCase().split(" ");
-    var loadedOnce = false;
-    // //mapsOfCommands.get(commandArray[0])
-    // if (mapsOfCommands.has(commandArray[0]) === false) {
-    //   setResult("Command not found");
-    // }
-    // else {
-
-    //   while(!loadedOnce){
-    //     console.log("Is this running?");
-    //     mapsOfCommands.get(commandArray[0])();
-    //     loadedOnce = true;
-    //   }
-    // }
 
     console.log(result);
     console.log("At the end Mode is now " + mode);
     if (mapsOfCommands.has(commandArray[0]) === false) {
-      setResult("Command not found");
+      result = "Command not found";
     } else if (commandArray.length > 2) {
+
       //Pass in commandArray into the function
       var commandFunction = mapsOfCommands.get(commandArray[0])();
       commandFunction(commandArray);
     } else {
       result = mapsOfCommands.get(commandArray[0])();
     }
-    const updatedResult = result ? result.toString() : ""; // Add type check to ensure 'result' is defined
     props.setHistory([...props.history, result]);
     setCommandString("");
   }
