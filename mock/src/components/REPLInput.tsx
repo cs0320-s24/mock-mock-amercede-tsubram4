@@ -10,7 +10,6 @@ interface REPLInputProps {
   //Only using props as global variables to keep track of history
   history: string[];
   setHistory: Dispatch<SetStateAction<string[]>>;
-  
 }
 // /**
 //  * A command-processor function for our REPL. The function returns a string, which is the value to print to history when
@@ -39,91 +38,107 @@ export function REPLInput(props: REPLInputProps) {
   var loaded1 = false;
   const [hasRun, setHasRun] = useState<boolean>(false);
   //Set result to be a string or a list of list of strings
-  const [result1, setResult] = useState<string | HTMLTableElement | String[][] | undefined>("");
+  const [result1, setResult] = useState<
+    string | HTMLTableElement | String[][] | undefined
+  >("");
   var result = "Result has not been updated yet";
-  
+
   const mockedData = MockedData();
   const mapsOfCommands = new Map();
 
-    //Here we instantiate our Mocked Data Map from our mocked data file
+  //Here we instantiate our Mocked Data Map from our mocked data file
 
-    mapsOfCommands.set("mode", function () {
-      setMode(!mode);
-      mode = !mode;
-      console.log("At the start Mode is now " + mode);
-      //Was brief, but going forward will be verbose
-      if (mode) {
-        return "We are now in verbose mode";
-      } else {
-        //Was verbose, going forward will be brief
-        return [["Command: mode"], ["Output: We are now in brief mode"]];
-      }
-    });
+  mapsOfCommands.set("mode", function () {
+    setMode(!mode);
+    mode = !mode;
+    console.log("At the start Mode is now " + mode);
+    //Was brief, but going forward will be verbose
+    if (mode) {
+      return "We are now in verbose mode";
+    } else {
+      //Was verbose, going forward will be brief
+      return [["Command: mode"], ["Output: We are now in brief mode"]];
+    }
+  });
 
-    mapsOfCommands.set("view", function () {
-      console.log("We're in view");
-      var viewData = mockedData.get("view");
-      var createdTable = createTable(viewData);
-      if (mockedData.has("view") === undefined || mockedData.has("view") === false) {
-        return "View data is not found in the mocked data file";
-      } else if (loaded === false) {
-        return "File is not loaded";
-      } else {
-        if (mode) {
-          return createdTable.toString();
-        }
-        //verbose
-        else {
-          return [["Command: view"], ["Output: " + createdTable]];
-        }
-      }
-      //brief
-    });
-    mapsOfCommands.set("load_file", function (commandArray: string[]) {
-      console.log("Loaded csv");
-      var allowedLoadedDirectories = mockedData.get("load");
-      console.log(commandArray)
-      if(commandArray.length === 1 || commandArray[1] === undefined || allowedLoadedDirectories === undefined || !allowedLoadedDirectories[0].includes(commandArray[1])){
-        console.log("File is not found in the allowed loaded directories");
-        return "File is not found in the allowed loaded directories";
-      }
-      else{
-        console.log("File is found in the allowed loaded directories");
-        setLoaded(true);
-        //brief
-        if (mode) {
-          return "Loaded csv successfully";
-        }
-        //verbose
-        else {
-          return [["Command: load_file"], ["Output: " + "Loaded csv successfully"]];
-        }
-      }
-      
-    });
-    mapsOfCommands.set("search", function (commandArray: string[]) {
-      console.log("Searched csv");
-      var searchResults = mockedData.get("search");
-      //brief
-      if(commandArray.length === 1 || commandArray[1] === undefined || searchResults === undefined || commandArray.length > 3 ){
-        console.log("Sorry, you must input a term to search for");
-        return "Sorry, you must input a term to search for appropriately";
-      }
+  mapsOfCommands.set("view", function () {
+    console.log("We're in view");
+    var viewData = mockedData.get("view");
+    var createdTable = createTable(viewData);
+    if (
+      mockedData.has("view") === undefined ||
+      mockedData.has("view") === false
+    ) {
+      return "View data is not found in the mocked data file";
+    } else if (loaded === false) {
+      return "File is not loaded";
+    } else {
       if (mode) {
-        return searchResults;
+        return createdTable.toString();
       }
       //verbose
       else {
-        return [["Command: search"], ["Output: " + searchResults]];
+        return [["Command: view"], ["Output: " + createdTable]];
       }
-    });
+    }
+    //brief
+  });
+  mapsOfCommands.set("load_file", function (commandArray: string[]) {
+    console.log("Loaded csv");
+    var allowedLoadedDirectories = mockedData.get("load");
+    console.log(commandArray);
+    if (
+      commandArray.length === 1 ||
+      commandArray[1] === undefined ||
+      allowedLoadedDirectories === undefined ||
+      !allowedLoadedDirectories[0].includes(commandArray[1])
+    ) {
+      console.log("File is not found in the allowed loaded directories");
+      return "File is not found in the allowed loaded directories";
+    } else {
+      console.log("File is found in the allowed loaded directories");
+      setLoaded(true);
+      //brief
+      if (mode) {
+        return "Loaded csv successfully";
+      }
+      //verbose
+      else {
+        return [
+          ["Command: load_file"],
+          ["Output: " + "Loaded csv successfully"],
+        ];
+      }
+    }
+  });
+  mapsOfCommands.set("search", function (commandArray: string[]) {
+    console.log("Searched csv");
+    var searchResults = mockedData.get("search");
+    //brief
+    if (
+      commandArray.length === 1 ||
+      commandArray[1] === undefined ||
+      searchResults === undefined ||
+      commandArray.length > 3
+    ) {
+      console.log("Sorry, you must input a term to search for");
+      return "Sorry, you must input a term to search for appropriately";
+    }
+    if (mode) {
+      return searchResults;
+    }
+    //verbose
+    else {
+      return [["Command: search"], ["Output: " + searchResults]];
+    }
+  });
 
   // This function is triggered when the button is clicked.
   // This will print out the possible and command, so output and input
   function handleSubmit(commandString: any) {
     setCount(count + 1);
     // CHANGED
-    
+
     const commandArray = commandString.toLowerCase().split(" ");
 
     //I want to pass in this commandArray into my Commands so that the code that is in commands
@@ -132,9 +147,9 @@ export function REPLInput(props: REPLInputProps) {
     // //mapsOfCommands.get(commandArray[0])
     // if (mapsOfCommands.has(commandArray[0]) === false) {
     //   setResult("Command not found");
-    // } 
+    // }
     // else {
-      
+
     //   while(!loadedOnce){
     //     console.log("Is this running?");
     //     mapsOfCommands.get(commandArray[0])();
@@ -143,16 +158,14 @@ export function REPLInput(props: REPLInputProps) {
     // }
 
     console.log(result);
-    console.log("At the end Mode is now " + mode)
-    if (mapsOfCommands.has(commandArray[0]) === false ){
+    console.log("At the end Mode is now " + mode);
+    if (mapsOfCommands.has(commandArray[0]) === false) {
       setResult("Command not found");
-    }
-    else if(commandArray.length > 2){
+    } else if (commandArray.length > 2) {
       //Pass in commandArray into the function
       var commandFunction = mapsOfCommands.get(commandArray[0])();
       commandFunction(commandArray);
-    }
-    else{
+    } else {
       result = mapsOfCommands.get(commandArray[0])();
     }
     const updatedResult = result ? result.toString() : ""; // Add type check to ensure 'result' is defined
@@ -160,16 +173,16 @@ export function REPLInput(props: REPLInputProps) {
     setCommandString("");
   }
   function createTable(tableData: string[][] | undefined) {
-    var table = document.createElement('table');
-    var tableBody = document.createElement('tbody');
-    
+    var table = document.createElement("table");
+    var tableBody = document.createElement("tbody");
+
     //If tableData is undefined, then we will return undefined
     if (tableData) {
-      tableData.forEach(function(rowData) {
-        var row = document.createElement('tr');
+      tableData.forEach(function (rowData) {
+        var row = document.createElement("tr");
 
-        rowData.forEach(function(cellData) {
-          var cell = document.createElement('td');
+        rowData.forEach(function (cellData) {
+          var cell = document.createElement("td");
           cell.appendChild(document.createTextNode(cellData));
           row.appendChild(cell);
         });
@@ -202,7 +215,7 @@ export function REPLInput(props: REPLInputProps) {
         />
       </fieldset>
       {/* TODO: Currently this button just counts up, can we make it push the contents of the input box to the history?*/}
-      
+
       <button onClick={() => handleSubmit(commandString)}>
         Submitted {count} times
       </button>
