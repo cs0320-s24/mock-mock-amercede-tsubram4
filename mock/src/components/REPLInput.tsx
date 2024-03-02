@@ -12,14 +12,13 @@ interface REPLInputProps {
 //  * A command-processor function for our REPL. The function returns a string, which is the value to print to history when
 //  * the command is done executing.
 //  *
-//  * The arguments passed in the input (which need not be named "args") should
+//  * The arguments passed in the input should
 //  * *NOT* contain the command-name prefix.
 //  */
 
 export function REPLInput(props: REPLInputProps) {
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
-  const [count, setCount] = useState<number>(0);
   //Mode true is brief, false is verbose
   const [mode, setMode] = useState<boolean>(true);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -31,7 +30,6 @@ export function REPLInput(props: REPLInputProps) {
   //Here we instantiate our Mocked Data Map from our mocked data file
   mapsOfCommands.set("mode", function () {
     setMode(!mode);
-    console.log("At the start Mode is now " + mode);
     //Was brief, but going forward will be verbose
     if (mode) {
       return "We are now in verbose mode";
@@ -42,7 +40,6 @@ export function REPLInput(props: REPLInputProps) {
   });
 
   mapsOfCommands.set("view", function () {
-    console.log("We're in view");
     var viewData = mockedData.get("view");
     if (
       mockedData.has("view") === undefined ||
@@ -61,22 +58,19 @@ export function REPLInput(props: REPLInputProps) {
     }
   });
   mapsOfCommands.set("load_file", function (commandArray: string[]) {
-    console.log("Loaded csv");
     var allowedLoadedDirectories = mockedData.get("load");
-    console.log(commandArray);
-      console.log("File is found in the allowed loaded directories");
-      setLoaded(true);
+    setLoaded(true);
       //brief
-      if (mode) {
-        return "Loaded csv successfully";
-      }
-      //verbose
-      else {
-        return [
+    if (mode) {
+      return "Loaded csv successfully";
+    }
+    //verbose
+    else {
+      return [
           ["Command: load_file"],
           [" Output: " + "Loaded csv successfully"],
         ];
-      }
+    }
   });
   mapsOfCommands.set("search", function (commandArray: string[]) {
     console.log("Searched csv");

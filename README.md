@@ -1,5 +1,3 @@
-> **GETTING STARTED:** You should likely start with the `/mock` folder from your solution code for the mock gearup.
-
 # Project Details
 Project name: Mock
 
@@ -7,7 +5,8 @@ Project description: Building a front-end web application with mock data using H
 
 Team members: Tanay Subramanian, Alexandra Mercedes-Santos
 
-Contribution: Roughly 20 combined hours of work
+Contribution: Roughly 30 combined hours of work: tsubram4 -> Testing, Documentation, REPLInput
+amercede -> REPLInput, MockedData, Documentation
 
 Link to repo: https://github.com/cs0320-s24/mock-mock-amercede-tsubram4/tree/main
 
@@ -16,8 +15,10 @@ High-level design: The App component is the highest-level component, which uses 
 
 Key data structures: We used an array of strings to store REPLHistory. We used a map in REPLInput to store the commands as keys and corresponding functions as values.
 
+Mocked Data map is outside of the handle submit function, so that it does not get created everytime the button was clicked. This is the same reason we created mockedData outside of the handleSubmit function.
+
 # Errors/Bugs
-We couldn't figure out how to get the 2D array to print out in a way that isn't just a line of string. So for view and search it will just print out a messy of line of string. We found some code on stack overflow to try to make HTML table with these arrays, but we could not figure out how to implement this properly into our code. It's still in REPLInput and we got it from user bmavity through this link: https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array. We also had problems with our mockedData to properly check in load_file if what a user input is actually in the allowed loaded directories.  From our rigorous testing, we don't think our final code contains any significant errors.
+We couldn't figure out how to get the 2D array to print out in a way that isn't just a line of string. So for view and search it will just print out a messy of line of string. We found some code on stack overflow to try to make HTML table with these arrays, but we could not figure out how to implement this properly into our code. It's still in REPLInput and we got it from user bmavity through this link: https://stackoverflow.com/questions/15164655/generate-html-table-from-2d-javascript-array. We also had problems with our mockedData to properly check in load_file if what a user input is actually in the allowed loaded directories. We could not get search or load_file to check whether the proper amount of parameters were being used. From our rigorous testing, we don't think our final code contains any significant errors.
 
 # Tests
 We have two testing files, one for end-to-end testing and one for unit testing. The end-to-end testing files involve comprehensive testing of possible user inputs and commands using Playwright. The unit tests check that the main function is working correctly.
