@@ -1,31 +1,28 @@
-/*
-  This is a reasonable starting point for the CSS in Mock.
-  Positioning in CSS can sometimes be annoying to manage, so we've opted to 
-  give you this starter CSS. Feel free to modify it as you wish, though.
-*/
-
+/* Styling overall REPL */
 .repl {
-    position:relative;
-    min-height:95vh;    
+  position: relative;
+  min-height: 95vh;
 }
 
-.repl-history {      
-    height:55vh;   
-    margin: auto;
-    display: block;
-    overflow: scroll;    
+.repl-history {
+  height: 55vh;
+  margin: auto;
+  display: block;
+  overflow: scroll;
 }
 
-.repl-input {        
-    margin: auto;    
-    height:10vh;
+.repl-input {
+  margin: auto;
+  height: 10vh;
 }
 .repl-command-box {
-    width: 90%;            
-    margin: auto;
-    display: block;
+  width: 90%;
+  margin: auto;
+  display: block;
 }
-button{
-    margin: auto;
-    display: block;
+
+/* Styling buttons, ensuring they are centered */
+button {
+  margin: auto;
+  display: block;
 }

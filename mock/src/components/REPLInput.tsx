@@ -3,24 +3,18 @@ import "../styles/main.css";
 import { ControlledInput } from "./ControlledInput";
 import { MockedData } from "./MockedData";
 
+// This interface defines the props for the REPLInput component
 interface REPLInputProps {
-  //Only using props as global variables to keep track of history
   history: string[];
   setHistory: Dispatch<SetStateAction<string[]>>;
 }
-// /**
-//  * A command-processor function for our REPL. The function returns a string, which is the value to print to history when
-//  * the command is done executing.
-//  *
-//  * The arguments passed in the input (which need not be named "args") should
-//  * *NOT* contain the command-name prefix.
-//  */
 
+// This function allows users to input commands and handles each command
 export function REPLInput(props: REPLInputProps) {
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
   const [count, setCount] = useState<number>(0);
-  //Mode true is brief, false is verbose
+  // Mode true is brief, false is verbose
   const [mode, setMode] = useState<boolean>(true);
   const [loaded, setLoaded] = useState<boolean>(false);
   var result = "That is not a valid command";
@@ -28,15 +22,15 @@ export function REPLInput(props: REPLInputProps) {
   const mockedData = MockedData();
   const mapsOfCommands = new Map();
 
-  //Here we instantiate our Mocked Data Map from our mocked data file
+  // Here we instantiate our Mocked Data Map from our mocked data file
   mapsOfCommands.set("mode", function () {
     setMode(!mode);
     console.log("At the start Mode is now " + mode);
-    //Was brief, but going forward will be verbose
+    // Was brief, but going forward will be verbose
     if (mode) {
       return "We are now in verbose mode";
     } else {
-      //Was verbose, going forward will be brief
+      // Was verbose, going forward will be brief
       return [["Command: mode"], [" Output: We are now in brief mode"]];
     }
   });
@@ -53,9 +47,8 @@ export function REPLInput(props: REPLInputProps) {
       return "File is not loaded";
     } else {
       if (mode) {
-        return viewData
-      }
-      else {
+        return viewData;
+      } else {
         return [["Command: view"], [" Output: " + viewData]];
       }
     }
@@ -64,19 +57,19 @@ export function REPLInput(props: REPLInputProps) {
     console.log("Loaded csv");
     var allowedLoadedDirectories = mockedData.get("load");
     console.log(commandArray);
-      console.log("File is found in the allowed loaded directories");
-      setLoaded(true);
-      //brief
-      if (mode) {
-        return "Loaded csv successfully";
-      }
-      //verbose
-      else {
-        return [
-          ["Command: load_file"],
-          [" Output: " + "Loaded csv successfully"],
-        ];
-      }
+    console.log("File is found in the allowed loaded directories");
+    setLoaded(true); // loading file
+    //brief
+    if (mode) {
+      return "Loaded csv successfully";
+    }
+    //verbose
+    else {
+      return [
+        ["Command: load_file"],
+        [" Output: " + "Loaded csv successfully"],
+      ];
+    }
   });
   mapsOfCommands.set("search", function (commandArray: string[]) {
     console.log("Searched csv");
@@ -94,8 +87,7 @@ export function REPLInput(props: REPLInputProps) {
     }
   });
 
-  // This function is triggered when the button is clicked.
-  // This will print out the possible and command, so output and input
+  // This function executes when the Submit button is clicked and outputs based on the command and mode.
   function handleSubmit(commandString: any) {
     const commandArray = commandString.toLowerCase().split(" ");
 
@@ -104,8 +96,7 @@ export function REPLInput(props: REPLInputProps) {
     if (mapsOfCommands.has(commandArray[0]) === false) {
       result = "Command not found";
     } else if (commandArray.length > 2) {
-
-      //Pass in commandArray into the function
+      // Pass in commandArray into the function
       var commandFunction = mapsOfCommands.get(commandArray[0])();
       commandFunction(commandArray);
     } else {
@@ -118,7 +109,7 @@ export function REPLInput(props: REPLInputProps) {
     var table = document.createElement("table");
     var tableBody = document.createElement("tbody");
 
-    //If tableData is undefined, then we will return undefined
+    // If tableData is undefined, then we will return undefined
     if (tableData) {
       tableData.forEach(function (rowData) {
         var row = document.createElement("tr");
@@ -137,17 +128,10 @@ export function REPLInput(props: REPLInputProps) {
     document.body.appendChild(table);
     return table;
   }
-  /**
-   * We suggest breaking down this component into smaller components, think about the individual pieces
-   * of the REPL and how they connect to each other...
-   */
+
+  // Render the REPLInput component
   return (
     <div className="repl-input">
-      {/* This is a comment within the JSX. Notice that it's a TypeScript comment wrapped in
-            braces, so that React knows it should be interpreted as TypeScript */}
-      {/* I opted to use this HTML tag; you don't need to. It structures multiple input fields
-            into a single unit, which makes it easier for screenreaders to navigate. */}
-
       <fieldset>
         <legend>Enter a command:</legend>
         <ControlledInput
@@ -156,8 +140,6 @@ export function REPLInput(props: REPLInputProps) {
           ariaLabel={"Command input"}
         />
       </fieldset>
-      {/* TODO: Currently this button just counts up, can we make it push the contents of the input box to the history?*/}
-
       <button onClick={() => handleSubmit(commandString)}>
         Submit Command
       </button>

@@ -1,6 +1,4 @@
-
-// Just an example function in a code module, so we can demo 
-// testing arbitrary TypeScript functions outside React
+// This is an example function to demo arbitrary TypeScript functions outside React
 export function zero() {
-    return 0
+  return 0;
 }
