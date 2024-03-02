@@ -19,7 +19,6 @@ interface REPLInputProps {
 export function REPLInput(props: REPLInputProps) {
   // Manages the contents of the input box
   const [commandString, setCommandString] = useState<string>("");
-  const [count, setCount] = useState<number>(0);
   //Mode true is brief, false is verbose
   const [mode, setMode] = useState<boolean>(true);
   const [loaded, setLoaded] = useState<boolean>(false);
@@ -31,7 +30,6 @@ export function REPLInput(props: REPLInputProps) {
   // Here we instantiate our Mocked Data Map from our mocked data file
   mapsOfCommands.set("mode", function () {
     setMode(!mode);
-    console.log("At the start Mode is now " + mode);
     //Was brief, but going forward will be verbose
     if (mode) {
       return "We are now in verbose mode";
@@ -60,23 +58,20 @@ export function REPLInput(props: REPLInputProps) {
   });
   mapsOfCommands.set("load_file", function (commandArray: string[]) {
     var allowedLoadedDirectories = mockedData.get("load");
-    console.log(commandArray);
-      console.log("File is found in the allowed loaded directories");
-      setLoaded(true);
-      //brief
-      if (mode) {
-        return "Loaded csv successfully";
-      }
-      //verbose
-      else {
-        return [
+    setLoaded(true);
+    //brief
+    if (mode) {
+      return "Loaded csv successfully";
+    }
+    //verbose
+    else {
+      return [
           ["Command: load_file"],
           [" Output: " + "Loaded csv successfully"],
-        ];
-      }
+      ];
+    }
   });
   mapsOfCommands.set("search", function (commandArray: string[]) {
-    console.log("Searched csv");
     var searchResults = mockedData.get("search");
     if (loaded === false) {
       return "File is not loaded";
@@ -93,10 +88,8 @@ export function REPLInput(props: REPLInputProps) {
 
   // This function executes when the Submit button is clicked and outputs based on the command and mode.
   function handleSubmit(commandString: any) {
+    
     const commandArray = commandString.toLowerCase().split(" ");
-
-    console.log(result);
-    console.log("At the end Mode is now " + mode);
     if (mapsOfCommands.has(commandArray[0]) === false) {
       result = "Command not found";
     } else if (commandArray.length > 2) {
